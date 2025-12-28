@@ -1,0 +1,155 @@
+Evade Gingerbread Auto Farm
+Square Toggle Menu + Key System + Sounds
+Key: MeisBest
+By Me
+
+-- Paste this script into your executor to run
+
+local Players = game:GetService("Players")
+local SoundService = game:GetService("SoundService")
+local LocalPlayer = Players.LocalPlayer
+local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+
+local farming = false
+local unlocked = false
+local KEY = "MeisBest"
+local LINKVERTISE = "https://link-hub.net/2569030/9ezNsjEOiVPj"
+
+-- ===== SOUND =====
+local ClickSound = Instance.new("Sound")
+ClickSound.SoundId = "rbxassetid://9129990543"
+ClickSound.Volume = 2
+ClickSound.Parent = SoundService
+
+local FailSound = Instance.new("Sound")
+FailSound.SoundId = "rbxassetid://9118823106"
+FailSound.Volume = 2
+FailSound.Parent = SoundService
+
+local function playClick()
+    ClickSound:Play()
+end
+
+local function playFail()
+    FailSound:Play()
+end
+
+-- ===== UI =====
+local ScreenGui = Instance.new("ScreenGui", game.CoreGui)
+
+local ToggleBtn = Instance.new("TextButton", ScreenGui)
+ToggleBtn.Size = UDim2.new(0,45,0,45)
+ToggleBtn.Position = UDim2.new(0.05,0,0.3,0)
+ToggleBtn.Text = "☰"
+ToggleBtn.TextSize = 22
+ToggleBtn.BackgroundColor3 = Color3.fromRGB(120,60,180)
+ToggleBtn.TextColor3 = Color3.new(1,1,1)
+ToggleBtn.Active = true
+ToggleBtn.Draggable = true
+
+local Frame = Instance.new("Frame", ScreenGui)
+Frame.Size = UDim2.new(0,260,0,200)
+Frame.Position = ToggleBtn.Position + UDim2.new(0,55,0,0)
+Frame.BackgroundColor3 = Color3.fromRGB(90,45,130)
+Frame.Visible = false
+Frame.Active = true
+Frame.Draggable = true
+
+local Title = Instance.new("TextLabel", Frame)
+Title.Size = UDim2.new(1,0,0,30)
+Title.Text = "Evade Gingerbread Farm"
+Title.BackgroundTransparency = 1
+Title.TextColor3 = Color3.new(1,1,1)
+Title.Font = Enum.Font.SourceSansBold
+Title.TextSize = 16
+
+local KeyBox = Instance.new("TextBox", Frame)
+KeyBox.Size = UDim2.new(1,-20,0,30)
+KeyBox.Position = UDim2.new(0,10,0,40)
+KeyBox.PlaceholderText = "Enter Key"
+KeyBox.BackgroundColor3 = Color3.fromRGB(120,70,170)
+KeyBox.TextColor3 = Color3.new(1,1,1)
+
+local GetKey = Instance.new("TextButton", Frame)
+GetKey.Size = UDim2.new(1,-20,0,30)
+GetKey.Position = UDim2.new(0,10,0,75)
+GetKey.Text = "Get Key"
+GetKey.BackgroundColor3 = Color3.fromRGB(150,90,210)
+GetKey.TextColor3 = Color3.new(1,1,1)
+
+local Unlock = Instance.new("TextButton", Frame)
+Unlock.Size = UDim2.new(1,-20,0,30)
+Unlock.Position = UDim2.new(0,10,0,110)
+Unlock.Text = "Unlock"
+Unlock.BackgroundColor3 = Color3.fromRGB(100,180,100)
+Unlock.TextColor3 = Color3.new(1,1,1)
+
+local FarmBtn = Instance.new("TextButton", Frame)
+FarmBtn.Size = UDim2.new(1,-20,0,40)
+FarmBtn.Position = UDim2.new(0,10,0,150)
+FarmBtn.Text = "Locked"
+FarmBtn.BackgroundColor3 = Color3.fromRGB(80,80,80)
+FarmBtn.TextColor3 = Color3.new(1,1,1)
+
+ToggleBtn.MouseButton1Click:Connect(function()
+    playClick()
+    Frame.Visible = not Frame.Visible
+end)
+
+GetKey.MouseButton1Click:Connect(function()
+    playClick()
+    setclipboard(LINKVERTISE)
+end)
+
+Unlock.MouseButton1Click:Connect(function()
+    if KeyBox.Text == KEY then
+        playClick()
+        unlocked = true
+        FarmBtn.Text = "Auto Farm: OFF"
+        FarmBtn.BackgroundColor3 = Color3.fromRGB(200,50,50)
+    else
+        playFail()
+        FarmBtn.Text = "Wrong Key 💀"
+    end
+end)
+
+FarmBtn.MouseButton1Click:Connect(function()
+    if not unlocked then return end
+    playClick()
+    farming = not farming
+    if farming then
+        FarmBtn.Text = "Auto Farm: ON"
+        FarmBtn.BackgroundColor3 = Color3.fromRGB(50,200,50)
+    else
+        FarmBtn.Text = "Auto Farm: OFF"
+        FarmBtn.BackgroundColor3 = Color3.fromRGB(200,50,50)
+    end
+end)
+
+local function getGingerbreads()
+    local list = {}
+    for _,v in pairs(workspace:GetDescendants()) do
+        if v:IsA("BasePart") and v.Name:lower():find("ginger") then
+            table.insert(list,v)
+        end
+    end
+    return list
+end
+
+task.spawn(function()
+    while task.wait(0.3) do
+        if farming and unlocked then
+            Character = LocalPlayer.Character
+            local hrp = Character and Character:FindFirstChild("HumanoidRootPart")
+            if hrp then
+                for _,g in pairs(getGingerbreads()) do
+                    if not farming then break end
+                    if g and g.Parent then
+                        hrp.CFrame = g.CFrame + Vector3.new(0,2,0)
+                        task.wait(0.15)
+                    end
+                end
+            end
+        end
+    end
+end)
